@@ -1,0 +1,131 @@
+{% extends "core/base.html" %}
+{% block title %}Dashboard • LearnPal{% endblock %}
+
+{% block content %}
+<h1 class="text-3xl font-bold mb-6 bg-gradient-to-r from-indigo-300 to-emerald-300 bg-clip-text text-transparent">Dashboard</h1>
+
+<!-- Stats -->
+<div class="grid md:grid-cols-4 gap-4 mb-8">
+  <div class="rounded-2xl border border-slate-800 p-5 bg-slate-900 card-hover animate-slide-in">
+    <div class="flex items-center gap-2 text-slate-400 text-xs">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v8m-4-4h8" />
+      </svg>
+      Total Goals
+    </div>
+    <div class="text-3xl font-bold mt-2 bg-gradient-to-r from-indigo-300 to-cyan-300 bg-clip-text text-transparent">{{ stats.total }}</div>
+    <div class="mt-2">
+      <div class="w-full bg-slate-700 rounded-full h-2">
+        <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-slate-800 p-5 bg-slate-900 card-hover animate-slide-in" style="animation-delay: 0.1s">
+    <div class="flex items-center gap-2 text-slate-400 text-xs">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+      </svg>
+      Completed
+    </div>
+    <div class="text-3xl font-bold text-emerald-300 mt-2">{{ stats.completed }}</div>
+    <div class="mt-2">
+      <div class="w-full bg-slate-700 rounded-full h-2">
+        <div class="progress-bar h-2 rounded-full" style="width: {% if stats.total > 0 %}{% widthratio stats.completed 100 stats.total %}{% else %}0{% endif %}%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-slate-800 p-5 bg-slate-900 card-hover animate-slide-in" style="animation-delay: 0.2s">
+    <div class="flex items-center gap-2 text-slate-400 text-xs">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+      </svg>
+      In Progress
+    </div>
+    <div class="text-3xl font-bold text-indigo-300 mt-2">{{ stats.in_progress }}</div>
+    <div class="mt-2">
+      <div class="w-full bg-slate-700 rounded-full h-2">
+        <div class="progress-bar h-2 rounded-full" style="width: {% if stats.total > 0 %}{% widthratio stats.in_progress 100 stats.total %}{% else %}0{% endif %}%"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-slate-800 p-5 bg-slate-900 card-hover animate-slide-in" style="animation-delay: 0.3s">
+    <div class="flex items-center gap-2 text-slate-400 text-xs">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <circle cx="12" cy="12" r="10" />
+      </svg>
+      Avg Progress
+    </div>
+    <div class="text-3xl font-bold text-amber-300 mt-2">{{ stats.avg_progress }}%</div>
+    <div class="mt-2">
+      <div class="w-full bg-slate-700 rounded-full h-2">
+        <div class="progress-bar h-2 rounded-full" style="width: {{ stats.avg_progress }}%"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Content sections -->
+<div class="grid md:grid-cols-3 gap-6">
+  <!-- Upcoming -->
+  <section class="md:col-span-2 rounded-2xl border border-slate-800 bg-slate-900 p-5">
+    <h2 class="font-medium mb-4">Upcoming (7 days)</h2>
+    <ul class="divide-y divide-slate-800">
+      {% for g in upcoming %}
+      <li class="py-3 flex items-center justify-between hover:bg-slate-800/40 rounded-lg px-2 transition-colors">
+        <div>
+          <div class="font-medium">{{ g.title }}</div>
+          <div class="text-xs text-slate-400">{{ g.due_date }}</div>
+        </div>
+        <div class="text-xs text-slate-400">{{ g.progress }}%</div>
+      </li>
+      {% empty %}
+      <li class="py-6 text-slate-400 text-sm text-center">
+        <span class="block text-2xl mb-2">📅</span>
+        No upcoming deadlines. You’re all caught up!
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <!-- Recommended -->
+  <section class="rounded-2xl border border-slate-800 bg-slate-900 p-5 card-hover">
+    <h2 class="font-medium mb-4 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+      </svg>
+      Recommended Resources
+    </h2>
+    <ul class="space-y-3">
+      {% for r in recommended %}
+      <li class="text-sm hover:bg-slate-800/40 p-3 rounded-lg transition-all duration-200 border border-slate-700/50 hover:border-indigo-500/30">
+        <div class="flex items-start justify-between">
+          <div class="flex-1">
+            <a href="{{ r.url }}" target="_blank" class="text-indigo-300 hover:text-indigo-200 font-medium hover:underline transition-colors">{{ r.title }}</a>
+            <div class="text-xs text-slate-400 mt-1">{{ r.topic }}{% if r.goal %} • for {{ r.goal }}{% endif %}</div>
+            {% if r.similarity %}
+            <div class="text-xs text-amber-400 mt-1">Match: {{ r.similarity }}</div>
+            {% endif %}
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-500 ml-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        </div>
+      </li>
+      {% empty %}
+      <li class="py-8 text-slate-400 text-sm text-center">
+        <span class="block text-3xl mb-3">🎯</span>
+        <div class="font-medium mb-1">No recommendations yet</div>
+        <div class="text-xs">Add some learning goals and resources to get personalized recommendations!</div>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+
+{% endblock %}
+
+
+
